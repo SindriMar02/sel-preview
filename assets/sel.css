@@ -1,0 +1,413 @@
+/* SEL by ÓX v2: Tastavents structure and mechanics (DESIGN.md), Pinterest moodboard skin. */
+@font-face{font-family:"Cormorant";src:url(fonts/cormorant-garamond-light.woff2) format("woff2");font-weight:300;font-display:swap}
+@font-face{font-family:"Amarna";src:url(fonts/amarna-regular.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Amarna";src:url(fonts/amarna-medium.woff2) format("woff2");font-weight:500;font-display:swap}
+
+:root{
+  --ink:#111612; --bar:#17231b; --bottle:#1f3326; --olive:#4b4a2a;
+  --candle:#f1e2bc; --paper:#eee5d1; --amber:#c8803a;
+  --line-d:rgba(241,226,188,.22); --line-l:rgba(31,51,38,.2);
+  --pad:1rem; --hh:10.8rem;
+  --io:cubic-bezier(.645,.045,.355,1); --io2:cubic-bezier(.785,.135,.15,.86);
+  color-scheme:dark;
+}
+/* Tastavents rem system: 1rem = 10px on a 1920 artboard */
+html{font-size:.5208333vw}
+@media (max-width:1025px){html{font-size:1.302086vw}}
+@media (max-width:767.98px){html{font-size:2.564105vw}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+section[id],main[id]{scroll-margin-top:var(--hh)}
+body{margin:0;background:var(--ink);color:var(--paper);font:400 1.9rem/1.45 "Amarna",Optima,sans-serif;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+h1,h2,p,ol,ul,dl,dd{margin:0}
+ol,ul{padding:0;list-style:none}
+button{font:inherit;color:inherit}
+.skip{position:fixed;left:1.2rem;top:-8rem;z-index:200;background:var(--candle);color:var(--ink);padding:1rem 1.4rem}
+.skip:focus{top:1.2rem}
+:focus-visible{outline:1px solid var(--amber);outline-offset:.4rem}
+
+/* type: ivypresto-display 100 → Cormorant Garamond Light; sizes ×1.1 to match Ivy cap height */
+.display{font-family:"Cormorant",serif;font-weight:300;text-transform:uppercase;letter-spacing:0;line-height:1em}
+.fs-188{font-size:20.6rem}
+.fs-116{font-size:12.8rem;line-height:1.05em}
+.fs-74{font-size:8.1rem;line-height:1.2em}
+.fs-866{font-size:95rem;line-height:.8em}
+.label{display:flex;gap:4.2rem;font-size:1.2rem;letter-spacing:.24em;text-transform:uppercase}
+.label i{font-style:normal;min-width:2rem}
+.label--center{justify-content:center}
+
+/* pills (Tastavents header and section buttons) */
+.pill{display:inline-flex;align-items:center;height:4.6rem;padding:0 3.2rem;border-radius:3rem;font:500 1.25rem/1 "Amarna",sans-serif;letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;transition:background-color .3s var(--io2),color .3s var(--io2),border-color .3s var(--io2)}
+.pill--fill{background:var(--candle);color:var(--ink)}
+.pill--line{border:1px solid var(--line-d);color:var(--candle)}
+.pill--dark{background:var(--bottle);color:var(--candle)}
+@media (hover:hover){.pill--fill:hover{background:var(--amber);color:var(--ink)}.pill--line:hover{border-color:var(--candle)}.pill--dark:hover{background:var(--olive)}}
+.pills{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center}
+.round{position:relative;width:max(4.6rem,40px);height:max(4.6rem,40px);border-radius:50%;border:1px solid var(--line-d);background:none;display:inline-grid;place-items:center;cursor:pointer;font-size:2.4rem;line-height:1;transition:border-color .4s var(--io),background-color .4s var(--io)}
+/* burger: both lines share one centre, so the X closes exactly on it and reverses the same path */
+.round span{position:absolute;left:50%;top:50%;width:16px;height:1px;margin:-.5px 0 0 -8px;background:var(--candle);transition:transform .55s var(--io)}
+.round span:first-child{transform:translateY(-3.5px)}
+.round span:last-child{transform:translateY(3.5px)}
+.menu-open .round span:first-child{transform:translateY(0) rotate(45deg)}
+.menu-open .round span:last-child{transform:translateY(0) rotate(-45deg)}
+.menu-open .round{border-color:var(--candle)}
+@media (hover:hover){.round:hover{border-color:var(--candle)}}
+
+/* header: dark bar inset by --pad, 10.8rem */
+.hd{--lm:1;position:fixed;top:0;left:0;right:0;z-index:110;height:var(--hh);padding:0 calc(var(--pad) + 3.6rem);display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.hd::after{content:"";position:absolute;inset:0 var(--pad);background:var(--bar);border-bottom:1px solid var(--line-d);z-index:-1;opacity:var(--hb,1)}
+.menu-open .hd::after{opacity:1}
+.hd::after{transition:opacity .5s var(--io)}
+.hd__left{display:flex;gap:max(4rem,26px);font:500 max(1.9rem,13.5px)/1 "Amarna",sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--candle);text-shadow:0 1px 14px rgba(17,22,18,.55)}
+.hd__left a{padding:.8rem 0}
+.hd__left a{background:linear-gradient(currentColor,currentColor) 100% 100%/0 1px no-repeat;transition:background-size 1s cubic-bezier(.19,1,.155,1.01)}
+@media (hover:hover){.hd__left a:hover{background-position:0 100%;background-size:100% 1px}}
+/* --ls = scroll-scrubbed size, --lm = menu factor (1 closed, 0 open): opening the menu eases the logo down to the bar size */
+.hd__logo{display:block;transform-origin:50% 0;transform:translateY(calc((var(--ls,1) - 1) * var(--lm,1) * 1.6rem)) scale(calc(1 + (var(--ls,1) - 1) * var(--lm,1)));will-change:transform}
+.hd__logo img{height:7.2rem;width:auto}
+/* top of page: no bar, no border, larger logo (scroll scrubs it back, see sel.js) */
+.motion .hd{--hb:0;--ls:1.75}
+.hd__right{display:flex;gap:1rem;justify-content:flex-end;align-items:center}
+
+/* full menu */
+/* menu: the panel wipes down from the header, links rise in one after another; closing runs it back faster */
+.nav{position:fixed;inset:0;z-index:105;background:var(--bar);padding:calc(var(--hh) + 6rem) 8rem 6rem;overflow-y:auto;overscroll-behavior-y:contain;visibility:hidden;clip-path:inset(0 0 100% 0);transition:clip-path .55s var(--io),visibility 0s .55s}
+.nav.is-open{visibility:visible;clip-path:inset(0 0 0 0);transition:clip-path .8s var(--io)}
+.nav__list li,.nav__side{opacity:0;transform:translateY(3rem);transition:opacity .3s var(--io),transform .4s var(--io)}
+.nav.is-open .nav__list li,.nav.is-open .nav__side{opacity:1;transform:none;transition:opacity .6s var(--io),transform .8s var(--io);transition-delay:calc(.22s + var(--i,0) * 55ms)}
+.nav__list li:nth-child(2){--i:1}.nav__list li:nth-child(3){--i:2}.nav__list li:nth-child(4){--i:3}.nav__list li:nth-child(5){--i:4}.nav__list li:nth-child(6){--i:5}.nav__side{--i:4}
+.nav__inner{display:grid;grid-template-columns:1fr 46rem;gap:8rem;height:100%}
+.nav__list a{display:flex;align-items:baseline;gap:3rem;font:300 9.6rem/1.1 "Cormorant",serif;text-transform:uppercase;color:var(--candle);transition:color .3s}
+.nav__list i{font:400 1.3rem/1 "Amarna",sans-serif;letter-spacing:.2em;font-style:normal;width:3rem}
+@media (hover:hover){.nav__list a:hover{color:var(--amber)}}
+.nav__side{display:grid;align-content:end;gap:2.4rem;color:var(--candle)}
+.nav__side img{aspect-ratio:4/5;object-fit:cover;border-radius:.4rem}
+.nav__phone{font:300 5.4rem/1 "Cormorant",serif}
+html.menu-open{overflow:hidden}
+
+/* 0 · banner */
+.banner{position:relative;padding-top:var(--pad);overflow:hidden}
+.banner__slider{position:relative;height:121.5rem;margin:0 var(--pad);overflow:hidden;border-radius:.4rem}
+.banner__slide{position:absolute;inset:0;opacity:0;visibility:hidden}
+.banner__slide.is-on{opacity:1;visibility:visible;z-index:1}
+.banner__bg{position:absolute;inset:-12rem 0 0;transform:translate3d(0,var(--translateY,0),0) scale(var(--scale,1))}
+.banner__bg img{width:100%;height:100%;object-fit:cover}
+.banner__slider::after{content:"";position:absolute;inset:0;background:var(--ink);opacity:.34;z-index:2}
+.banner__card{position:absolute;z-index:3;top:20rem;left:50%;width:22rem;height:31rem;margin-left:-11rem;overflow:hidden;border-radius:.4rem}
+.banner__card .banner__slide img{width:100%;height:100%;object-fit:cover}
+.banner__title{position:absolute;z-index:4;left:0;right:0;bottom:16rem;text-align:center;color:var(--candle);transform:translate3d(0,var(--translateY,0),0)}
+.banner__title .letters{display:block}
+.char{display:inline-block}
+.cword{display:inline-block;white-space:nowrap}
+
+/* I · presentation */
+.pres{background:var(--paper);color:var(--bottle);margin:0 var(--pad);padding:10rem 0 12rem;display:grid;grid-template-columns:repeat(12,1fr);border-radius:0 0 .4rem .4rem}
+.pres .label{grid-column:2/5;padding-top:.6rem}
+.pres__text{grid-column:7/11;font-size:2.2rem;line-height:1.4}
+
+/* horizontal-scroll · evenings */
+.hscroll{position:relative;margin:0 var(--pad);padding:12rem 0 26rem;overflow:hidden}
+.hscroll__bg{position:absolute;inset:-15rem 0 0;z-index:0;transform:translate3d(0,var(--translateY,0),0) scale(var(--scale,1))}
+.hscroll__bg img{width:100%;height:100%;object-fit:cover}
+.hscroll__bg::after{content:"";position:absolute;inset:0;background:var(--ink);opacity:.25}
+.hscroll__title{position:relative;z-index:3;text-align:center;color:var(--candle);margin-bottom:6rem}
+.marquee-trigger{position:absolute;z-index:2;left:0;right:0;top:30rem;pointer-events:auto;overflow:hidden}
+.marquee{display:flex;white-space:nowrap;will-change:transform}
+.marquee-item{color:var(--candle);opacity:.92;padding-right:6rem}
+.hscroll__pin{position:relative;z-index:4}
+.cards{display:flex;justify-content:space-between;align-items:flex-start;padding:0 16rem}
+.card{width:39.8rem;padding:2.5rem 1.3rem 1.3rem;background:var(--candle);color:var(--bottle);border-radius:.4rem;transform:translate3d(0,var(--translateY,0),0)}
+.card--mid{margin-top:19rem}.card--low{margin-top:38rem}
+.card__top{display:flex;justify-content:space-between;align-items:center;font-size:1.25rem;letter-spacing:.22em;text-transform:uppercase;padding:0 1.2rem}
+.card__icon{width:3rem;height:3rem;border-radius:50%;border:1px solid var(--line-l);display:grid;place-content:center;font-size:1.8rem;line-height:1}
+.card__text{font-size:1.7rem;line-height:1.4;padding:1.6rem 1.2rem 2.4rem;max-width:32rem}
+.card img{aspect-ratio:4/5;object-fit:cover;width:100%;border-radius:.3rem}
+
+/* II · kitchen */
+.kitchen{position:relative;margin:0 var(--pad);background:var(--ink);display:grid;grid-template-columns:27rem 1fr 27rem;height:100rem;overflow:hidden}
+.vmarquee{overflow:hidden;height:100%}
+.vmarquee__track{display:flex;flex-direction:column;animation:sel-vmq 60s linear infinite}
+.vmarquee--right .vmarquee__track{animation-direction:reverse}
+@keyframes sel-vmq{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-50%,0)}}
+.tile{height:22rem;display:grid;place-content:center;font-size:1.1rem;letter-spacing:.24em;text-transform:uppercase;color:var(--candle);border-bottom:1px solid var(--line-d)}
+.tile--img{padding:0}
+.tile--img img{width:27rem;height:22rem;object-fit:cover}
+.kitchen__center{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12rem 8rem 10rem}
+.kitchen__center .label{color:var(--candle)}
+.kitchen__center h2{color:var(--candle);margin:5rem 0 0;position:relative;z-index:2}
+.kitchen__img{width:56rem;height:30rem;margin:-4rem auto 5rem;overflow:hidden;border-radius:.4rem;transform:translate3d(0,var(--translateY,0),0)}
+.kitchen__img img{width:100%;height:100%;object-fit:cover}
+.kitchen__text{max-width:58rem;font-size:1.9rem;color:var(--paper);margin-bottom:4rem}
+
+/* III · room */
+.room{margin:0 var(--pad);background:var(--paper);color:var(--bottle);padding:14rem 0 12rem;overflow:hidden}
+.room__head{display:grid;grid-template-columns:16rem 1fr;gap:3rem;padding-left:40rem;padding-right:20rem;align-items:start}
+.room__small{transform:translate3d(0,var(--translateY,0),0)}
+.room__small img{aspect-ratio:4/5;object-fit:cover;border-radius:.3rem}
+.room__head .label{margin-bottom:3rem}
+.room__pair{display:grid;grid-template-columns:38fr 4fr 58fr;margin-top:6rem;align-items:start}
+.room__a{grid-column:1;margin-top:20rem;transform:translate3d(0,var(--translateY,0),0)}
+.room__b{grid-column:3;transform:translate3d(0,var(--translateY,0),0)}
+.room__a img{aspect-ratio:4/3;object-fit:cover;width:100%}
+.room__b img{aspect-ratio:3/2;object-fit:cover;width:100%}
+.room__foot{display:grid;grid-template-columns:1fr 1fr;align-items:start;justify-items:start;padding:8rem 6rem 0}
+.room__foot p{max-width:62rem;font-size:2rem;line-height:1.45}
+
+/* IV · chef */
+.chef{margin:0 var(--pad);display:grid;grid-template-columns:1fr 1fr;height:110rem;overflow:hidden}
+.chef__photo{position:relative;overflow:hidden}
+.chef__photo>div{position:absolute;inset:-12rem 0;transform:translate3d(0,var(--translateY,0),0) scale(var(--scale,1))}
+.chef__photo img{width:100%;height:100%;object-fit:cover}
+.chef__panel{position:relative;background:var(--olive);color:var(--candle);padding:14rem 8rem 8rem;display:flex;flex-direction:column;align-items:center;text-align:center}
+.chef__panel h2{margin-top:5rem;font-size:9.6rem;line-height:1.08em}
+.chef__card{margin-top:auto;align-self:stretch;display:grid;grid-template-columns:22rem 1fr;gap:2.8rem;align-items:center;background:var(--paper);color:var(--bottle);padding:2rem;border-radius:.4rem;text-align:left}
+.chef__card p{font-size:1.7rem;line-height:1.5;margin:0}
+.chef__card .card__icon{display:none}
+.chef__card img{grid-column:1;grid-row:1;aspect-ratio:4/5;object-fit:cover;width:100%;border-radius:.3rem}
+.chef__card p{grid-column:2;grid-row:1}
+
+/* V · menu */
+.menu{margin:0 var(--pad);background:var(--paper);color:var(--bottle)}
+.menu__head{padding:16rem 20rem 10rem;text-align:center;display:grid;gap:5rem;justify-items:center}
+.container-parent{position:relative;height:260vh}
+.container-sticky{position:relative;height:100vh;overflow:hidden;padding:calc(var(--hh) + 2rem) 3rem 3rem}
+.gallery-wrapper{position:relative;height:100%}
+.gallery-item{position:absolute;top:0;left:0;width:61.7rem;height:100%;border-radius:.4rem;overflow:hidden;box-shadow:-2rem 0 4rem rgba(17,22,18,.25)}
+.gallery-item img{width:100%;height:100%;object-fit:cover}
+.g1{z-index:5}.g2{z-index:4}.g3{z-index:3}.g4{z-index:2}.g5{z-index:1}
+.g2{transform:translateX(14%)}.g3{transform:translateX(27%)}.g4{transform:translateX(40%)}.g5{transform:translateX(53%)}
+.container-carta{position:absolute;z-index:10;top:calc(var(--hh) + 2rem);right:3rem;bottom:3rem;width:62rem;background:var(--ink);color:var(--paper);border-radius:.4rem;display:grid;place-items:center;padding:5rem 7rem}
+.inner-content{width:100%;display:grid;gap:1.6rem;text-align:center;justify-items:center}
+.carta__mark{width:9rem;margin-bottom:1.6rem}
+.carta__k,.carta__price{font-size:1.25rem;letter-spacing:.22em;text-transform:uppercase;color:var(--candle)}
+.carta__k b,.carta__price b{font-weight:400;color:var(--amber);margin-left:1rem}
+.carta__snacks{font-size:1.7rem;color:var(--paper);line-height:1.6}
+.carta__list{width:100%;border-top:1px solid var(--line-d);margin:1rem 0}
+.carta__list li{display:grid;grid-template-columns:5rem 1fr auto;align-items:baseline;text-align:left;padding:1.3rem 0;border-bottom:1px solid var(--line-d);font:300 3.2rem/1.15 "Cormorant",serif;text-transform:uppercase;color:var(--candle)}
+.carta__list i{font:400 1.2rem/1 "Amarna",sans-serif;font-style:normal;letter-spacing:.2em;color:var(--paper)}
+.carta__list .ox i{color:var(--amber)}
+.carta__list b{font:400 1.4rem/1 "Amarna",sans-serif;color:var(--amber)}
+.carta__note{font-size:1.4rem;color:rgba(238,229,209,.78);max-width:44rem;margin-bottom:1rem}
+
+/* VI · book */
+.book{margin:0 var(--pad);background:var(--paper);color:var(--bottle);padding:14rem 6rem 16.5rem;display:grid;justify-items:center;gap:5rem;text-align:center}
+.book__grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6rem;text-align:left;margin-top:4rem}
+.book__side{display:grid;gap:5rem;align-content:start}
+.book__img{width:46rem;transform:translate3d(0,var(--translateY,0),0)}
+.book__img img{aspect-ratio:4/3;object-fit:cover;border-radius:.4rem}
+.book__rows>div{display:flex;justify-content:space-between;gap:2rem;padding:2rem 0;border-bottom:1px solid var(--line-l)}
+.book__rows dt{font-size:1.2rem;letter-spacing:.24em;text-transform:uppercase;padding-top:.4rem}
+.book__rows dd{font-size:2rem}
+
+/* galeria */
+.galeria{margin:0 var(--pad);background:var(--ink);padding:16rem 0 12rem;text-align:center;display:grid;gap:5rem;justify-items:center}
+.galeria .label{color:var(--candle)}
+.galeria h2{color:var(--candle);max-width:130rem}
+.galeria__slider{position:relative;width:96rem;height:62rem;margin-top:4rem;border-radius:.4rem;overflow:hidden}
+.galeria__slide{position:absolute;inset:0;opacity:0;visibility:hidden}
+.galeria__slide.is-on{opacity:1;visibility:visible;z-index:1}
+.galeria__slide img{width:100%;height:100%;object-fit:cover}
+.galeria__nav{display:flex;align-items:center;gap:3rem;color:var(--candle)}
+.galeria__nav img{width:6rem}
+
+/* footer */
+.ft{margin:0 var(--pad) var(--pad);background:var(--bar);color:var(--candle);overflow:hidden}
+.ft__imgwrap{height:70rem;overflow:hidden}
+.footer-img{width:100%;height:100%;object-fit:cover;transform-origin:50% 0}
+.ft__rights{display:flex;justify-content:space-between;padding:2.4rem 8rem 3rem;border-top:1px solid var(--line-d);font-size:1.2rem;letter-spacing:.2em;text-transform:uppercase}
+
+/* split words (Splitting + slide-up2, 48ms stagger) */
+.split .word{display:inline-block;overflow:hidden;padding:.6ch 0;margin:-.7ch 0;vertical-align:top}
+.split .word>span{display:inline-block}
+.motion .split .word>span{transform:translateY(110%) rotate(1deg);opacity:0}
+.motion .split.aos-animate .word>span{animation:sel-slideup2 1.4s var(--io) both;animation-delay:calc(var(--word-index) * 48ms)}
+@keyframes sel-slideup2{0%{opacity:0;transform:translateY(110%) rotate(1deg)}to{opacity:1;transform:translateY(0) rotate(0)}}
+.motion [data-aos="fadeIn"]{opacity:0}
+.motion [data-aos="fadeIn"].aos-animate{animation:sel-fadein .8s ease-in-out both}
+.motion .label[data-aos]{opacity:0}
+.motion .label[data-aos].aos-animate{animation:sel-fadeinup .8s ease-in-out both}
+@keyframes sel-fadein{from{opacity:0}to{opacity:1}}
+@keyframes sel-fadeinup{from{opacity:0;transform:translate3d(0,3rem,0)}to{opacity:1;transform:none}}
+/* hero letters */
+.motion .banner__title .char{opacity:0;transform:translateY(40%)}
+.motion .banner__title.is-in .char{animation:sel-slideup2 1.4s var(--io) both;animation-delay:calc(var(--char-index) * 40ms + .3s)}
+.motion .banner__card{clip-path:inset(100% 0 0 0)}
+.motion .banner__card.is-in{clip-path:inset(0);transition:clip-path 1.4s var(--io) .2s}
+
+/* tablet (<=1025): Tastavents switches to its tablet rem and stacks */
+@media (max-width:1025px){
+  :root{--pad:.5rem;--hh:8rem}
+  .hd__left{display:none}
+  .hd{grid-template-columns:auto 1fr;padding:0 2.6rem}
+  .hd__logo img{height:5.6rem}
+  .banner__slider{height:calc(100svh - var(--pad))}
+  .banner__card{top:auto;bottom:34rem;width:18rem;height:25rem;margin-left:-9rem}
+  .banner__title{bottom:10rem}
+  .fs-188{font-size:11rem}.fs-116{font-size:7.2rem}.fs-74{font-size:5.3rem}.fs-866{font-size:31rem}
+  .pres{grid-template-columns:1fr;padding:8rem 4rem;gap:4rem}
+  .pres .label,.pres__text{grid-column:auto}
+  .cards{padding:0 4rem;gap:3rem}
+  .card{width:auto;flex:1}.card--mid,.card--low{margin-top:8rem}
+  .kitchen{grid-template-columns:16rem 1fr 16rem;height:auto}
+  .tile--img img{width:16rem}
+  .room__head{padding:0 4rem;grid-template-columns:12rem 1fr}
+  .chef{grid-template-columns:1fr;height:auto}
+  .chef__photo{height:60rem}
+  .chef__card{margin-top:6rem}
+  .chef__panel h2{font-size:7.2rem}
+  .menu__head{padding:10rem 4rem 6rem}
+  .container-parent{height:auto}
+  .container-sticky{height:auto;padding:0 2rem 4rem}
+  .gallery-wrapper{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;height:46rem}
+  .gallery-item{position:relative;flex:0 0 70%;transform:none!important;scroll-snap-align:start;box-shadow:none}
+  .container-carta{position:relative;inset:auto;width:auto;margin-top:2rem;padding:6rem 4rem}
+  .book{padding:10rem 3rem}
+  .book__grid{grid-template-columns:1fr}
+  .book__img{width:100%}
+  .galeria__slider{width:calc(100% - 4rem);height:auto;aspect-ratio:3/2}
+  .ft__rights{flex-direction:column;gap:1rem;text-align:center;padding:2.4rem 4rem 3rem}
+}
+/* phone + tablet (<=1025): one stacked layout, Tastavents mobile patterns */
+@media (max-width:1025px){
+  .fs-188{font-size:5.6rem}.fs-116{font-size:4.2rem}.fs-74{font-size:3.3rem}.fs-866{font-size:24.4rem}
+  .banner__card{width:18rem;height:26rem;bottom:auto;top:calc(var(--hh) + 6rem);margin-left:-9rem}
+  .banner__title{bottom:6rem}
+  .label{gap:2.4rem;font-size:1.05rem}
+  body{font-size:1.5rem}
+  .pres{padding:6rem 2rem}
+  .pres__text{font-size:1.6rem}
+  .hscroll{padding:8rem 0 6rem}
+  .marquee-trigger{top:22rem}
+  .hscroll__pin{overflow:hidden}
+  .cards{padding:0 2rem;gap:1.6rem;width:max-content}
+  .card{flex:0 0 26rem;width:26rem}.card--mid,.card--low{margin-top:0}
+  .card__text{font-size:1.4rem}
+  .kitchen{grid-template-columns:1fr;height:auto}
+  .vmarquee{height:auto}
+  .vmarquee--left{order:2}.vmarquee--right{display:none}
+  .vmarquee__track{flex-direction:row;width:max-content;animation-name:sel-hmq}
+  @keyframes sel-hmq{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+  .tile{height:12rem;min-width:14rem;border-bottom:0;border-right:1px solid var(--line-d)}
+  .tile--img img{width:14rem;height:12rem}
+  .kitchen__center{padding:8rem 2rem 6rem}
+  .kitchen__img{width:100%;height:auto;aspect-ratio:3/2;margin:3rem 0}
+  .kitchen__text{font-size:1.5rem}
+  .room{padding:8rem 0 8rem}
+  .room__head{grid-template-columns:1fr;padding:0 2rem}
+  .room__small{width:14rem}
+  .room__pair{grid-template-columns:1fr;gap:1rem;padding:0 2rem}
+  .room__a,.room__b{grid-column:auto;margin-top:0}
+  .room__foot{grid-template-columns:1fr;gap:3rem;padding:5rem 2rem 0}
+  .room__foot p{font-size:1.5rem}
+  .chef__panel{padding:8rem 2rem}
+  .chef__card{grid-template-columns:12rem 1fr;gap:1.6rem}
+  .chef__card p{font-size:1.4rem}
+  .chef__panel h2{font-size:4.6rem}
+  .nav{padding:calc(var(--hh) + 3rem) 2rem 3rem}
+  .nav__inner{grid-template-columns:1fr;gap:4rem;height:auto;min-height:100%}
+  .nav__list a{font-size:4.2rem;gap:2rem}
+  .nav__side img{display:none}
+  .nav__phone{font-size:3.2rem}
+  .gallery-wrapper{height:36rem}
+  .gallery-item{flex-basis:82%}
+  .carta__list li{font-size:2.2rem;grid-template-columns:4rem 1fr auto}
+  .book{padding:8rem 2rem}
+  .book__rows dd{font-size:1.5rem}
+  .galeria{padding:10rem 0 8rem}
+  .galeria h2{padding:0 2rem}
+  .ft__imgwrap{height:36rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .vmarquee__track{animation:none}
+  *,*::before,*::after{transition-duration:.01ms!important}
+}
+
+/* header below 1025px: fixed pixel sizes so it never scales with the window. Book | logo | menu */
+@media (max-width:1025px){
+  :root{--hh:64px}
+  .hd{height:64px;padding:0 14px;grid-template-columns:1fr auto 1fr;gap:8px}
+  .hd::after{inset:0 4px}
+  .hd__left,.hd__wine{display:none}
+  .hd__right{display:contents}
+  .hd__right .pill--fill{order:1;justify-self:start}
+  .hd__logo{order:2;display:block}
+  .hd__logo img{height:42px;width:auto}
+  .hd__right .round{order:3;justify-self:end}
+  .hd .pill{height:36px;padding:0 16px;font-size:11px;letter-spacing:.2em}
+  .hd .round{width:40px;height:40px}
+  .banner__slider{height:calc(100svh - 4px);min-height:calc(var(--hh) + 54rem)}
+}
+/* Keep the approved control artwork; enlarge small touch areas around it. */
+@media (pointer:coarse){
+  .pill,.round,.hd__logo{position:relative}
+  .pill::before,.round::before,.hd__logo::before{content:"";position:absolute;inset:50% auto auto 50%;width:100%;height:100%;min-width:44px;min-height:44px;transform:translate(-50%,-50%)}
+  .bookw select,.bookw input:not([type="hidden"]){min-height:44px;min-width:44px}
+  .skip,.nav__list a,.nav__phone,.ft__nav a,.ft__contact a,.ft__rights a,.book__rows a{min-height:44px;display:inline-flex;align-items:center}
+  .nav__list a{display:flex}
+}
+
+/* booking card: picks guests, date and time, then opens Dineout pre-filled (g, dt) */
+.bookw{background:var(--ink);color:var(--paper);border-radius:.4rem;padding:6rem 7rem 5rem;display:grid;gap:0;align-content:start;text-align:center;justify-items:stretch}
+.bookw__mark{width:10rem;justify-self:center;margin-bottom:2.4rem}
+.bookw__k{font:300 4.4rem/1 "Cormorant",serif;text-transform:uppercase;color:var(--candle);margin-bottom:4rem}
+.bookw__row{display:flex;justify-content:space-between;align-items:center;gap:2rem;padding:2.2rem 0;border-bottom:1px solid var(--line-d);text-align:left}
+.bookw__row:first-of-type{border-top:1px solid var(--line-d)}
+.bookw__row span{font-size:1.2rem;letter-spacing:.24em;text-transform:uppercase;color:var(--candle)}
+.bookw select,.bookw input{appearance:none;-webkit-appearance:none;background:none;border:0;color:var(--paper);font:300 2.8rem/1.2 "Cormorant",serif;text-align:right;color-scheme:dark;cursor:pointer;min-width:0}
+.bookw select{padding-right:2.6rem;background:linear-gradient(45deg,transparent 50%,var(--candle) 50%) right 1.2rem center/.7rem .7rem no-repeat,linear-gradient(-45deg,transparent 50%,var(--candle) 50%) right .7rem center/.7rem .7rem no-repeat}
+.bookw option{color:#111;background:#fff}
+.bookw input::-webkit-calendar-picker-indicator{filter:invert(.9) sepia(.3);opacity:.8;cursor:pointer}
+.bookw__note{font-size:1.5rem;color:rgba(238,229,209,.78);margin:2.6rem 0}
+.bookw__note.is-warn{color:var(--amber)}
+.bookw__go{justify-self:center;height:5.4rem;padding:0 4.4rem;border:0;cursor:pointer}
+.bookw__by{margin-top:1.6rem;font-size:1.1rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(238,229,209,.6)}
+
+/* footer signature: three quiet columns, then the mark set large on the centre axis */
+.ft__top{display:grid;grid-template-columns:1fr auto 1fr;gap:6rem;align-items:start;padding:10rem 8rem 0;font-size:1.7rem;line-height:1.6}
+.ft__k{font-size:1.2rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(241,226,188,.6);margin-bottom:1.4rem}
+.ft__nav{display:flex;flex-direction:column;align-items:center;gap:.6rem;font:300 3.2rem/1.25 "Cormorant",serif;text-transform:uppercase}
+.ft__nav a,.ft__contact a{background:linear-gradient(currentColor,currentColor) 100% 100%/0 1px no-repeat;transition:background-size 1s cubic-bezier(.19,1,.155,1.01)}
+@media (hover:hover){.ft__nav a:hover,.ft__contact a:hover{background-position:0 100%;background-size:100% 1px}}
+.ft__contact{text-align:right}
+.ft__sign{display:flex;justify-content:center;padding:12rem 8rem 9rem}
+.ft__logo{width:min(64rem,70%)}
+@media (max-width:1025px){
+  .ft__top{grid-template-columns:1fr;text-align:center;justify-items:center;gap:5rem;padding:8rem 2rem 0}
+  .ft__contact{text-align:center}
+  .ft__nav{font-size:3rem}
+  .ft__sign{padding:9rem 2rem 7rem}
+  .ft__logo{width:70%}
+  .bookw{padding:5rem 2.4rem 4rem}
+  .bookw select,.bookw input{font-size:2.4rem}
+}
+
+/* loader: flat mark on the centre axis, a hairline that fills with real loading, then one wipe up */
+.loader{display:none}
+.motion .loader{display:grid;position:fixed;inset:0;z-index:300;background:var(--bar);place-content:center;justify-items:center;gap:4rem;clip-path:inset(0 0 0 0)}
+.loader__logo{width:max(16rem,120px);height:auto;opacity:0;animation:sel-loader-in .9s var(--io) .15s forwards}
+.loader__bar{display:block;width:max(14rem,104px);height:1px;background:var(--line-d);overflow:hidden}
+.loader__bar i{display:block;height:100%;background:var(--candle);transform-origin:0 50%;transform:scaleX(var(--p,0));transition:transform .5s var(--io)}
+.loader.is-out{clip-path:inset(0 0 100% 0);transition:clip-path 1s var(--io) .1s}
+.loader.is-out .loader__logo,.loader.is-out .loader__bar{opacity:0;transform:translateY(-2rem);transition:opacity .45s var(--io),transform .6s var(--io)}
+@keyframes sel-loader-in{from{opacity:0;transform:translateY(1.2rem)}to{opacity:1;transform:none}}
+html.is-loading{overflow:hidden}
+
+/* header buttons match the nav text: same type size, same height for pills and the round menu button */
+.hd .pill{height:max(5rem,38px);padding:0 max(3rem,22px);font-size:max(1.7rem,12.5px);letter-spacing:.18em}
+.hd .round{width:max(5rem,38px);height:max(5rem,38px)}
+@media (max-width:1025px){
+  .hd .pill{height:40px;padding:0 18px;font-size:12px;letter-spacing:.18em}
+  .hd .round{width:40px;height:40px}
+}
+/* room closing line: sits on the right image's column, larger text, the button under it at full size */
+.room__foot{grid-template-columns:38fr 4fr 58fr;padding:16rem 0 0;gap:0}
+.room__foot p{grid-column:3;grid-row:1;font:300 3.4rem/1.35 "Cormorant",serif;max-width:78rem;color:var(--bottle)}
+.room__foot .pill{grid-column:3;grid-row:2;margin-top:4rem;height:max(5.4rem,42px);padding:0 max(3.6rem,26px);font-size:max(1.5rem,12px)}
+@media (max-width:1025px){
+  .room__foot{grid-template-columns:1fr;padding:5rem 2rem 0}
+  .room__foot p,.room__foot .pill{grid-column:1}
+  .room__foot p{font-size:2.6rem}
+}
