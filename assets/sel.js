@@ -154,6 +154,7 @@
     bw.addEventListener('submit', e => {
       e.preventDefault();
       if (!okDay()) { date.focus(); return; }
+      if (!date.reportValidity()) return;
       const u = new URL('https://www.dineout.is/is/selbyox');
       u.search = new URLSearchParams({ g: bw.elements.g.value, dt: `${date.value}T${bw.elements.time.value}`, type: 'bookings', isolation: 'true' });
       // A noopener open may return null even on success. Open a blank tab first
@@ -236,6 +237,7 @@
       const c = d.querySelector('.container-carta'), i = c && c.querySelector('.inner-content');
       if (!i) return;
       i.style.scale = '';
+      if (W() <= 1025) return;
       const cs = getComputedStyle(c), room = c.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
       const f = Math.min(1, room / i.scrollHeight * .98);
       if (f < 1) i.style.scale = f.toFixed(3);
