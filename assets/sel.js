@@ -231,17 +231,32 @@
         }, end: () => '+=' + dist(), pin: true, scrub: true, anticipatePin: 1, invalidateOnRefresh: true } });
     });
 
+    /* carta: the card is as tall as the window, its content is not; on a short window scale the content down to fit instead of cropping it */
+    const fitCarta = () => {
+      const c = d.querySelector('.container-carta'), i = c && c.querySelector('.inner-content');
+      if (!i) return;
+      i.style.scale = '';
+      const cs = getComputedStyle(c), room = c.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      const f = Math.min(1, room / i.scrollHeight * .98);
+      if (f < 1) i.style.scale = f.toFixed(3);
+    };
+    fitCarta();
+    ScrollTrigger.addEventListener('refreshInit', fitCarta);
+    d.fonts && d.fonts.ready.then(fitCarta);
+
     /* menu gallery (desktop): pin the stage, fan the five photos in, slide the carta over */
     mm.add('(min-width: 1025.1px)', () => {
       const parent = d.querySelector('.container-parent'), stage = d.querySelector('.container-sticky');
       ScrollTrigger.create({ trigger: parent, start: 'top top', end: () => `bottom-=${stage.offsetHeight} top`, pin: stage, pinSpacing: false, scrub: true, invalidateOnRefresh: true });
-      const tl = gsap.timeline({ scrollTrigger: { trigger: parent, start: '45% bottom', end: '85% bottom', scrub: true, anticipatePin: true, invalidateOnRefresh: true } });
-      tl.fromTo('.gallery-wrapper .g5', { x: '400%' }, { x: '53%', ease: 'none' })
-        .fromTo('.gallery-wrapper .g4', { x: '300%' }, { x: '40%', ease: 'none' }, '<')
-        .fromTo('.gallery-wrapper .g3', { x: '200%' }, { x: '27%', ease: 'none' }, '<')
-        .fromTo('.gallery-wrapper .g2', { x: '100%' }, { x: '14%', ease: 'none' }, '<')
-        .fromTo('.container-carta', { x: '290%' }, { x: 0, ease: 'none' }, '<')
-        .fromTo('.container-carta .inner-content', { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none' }, '<');
+      /* scrub 1.2 = the photos trail the scroll by ~1 s, so wheel steps (Safari desktop has no ScrollSmoother) glide instead of jump.
+         The cards arrive one after another with an ease-out, the carta last, then the stage holds before the pin lets go */
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out', duration: 1 }, scrollTrigger: { trigger: parent, start: 'top top', end: () => `bottom-=${stage.offsetHeight * 1.35} top`, scrub: 1.2, invalidateOnRefresh: true } });
+      tl.fromTo('.gallery-wrapper .g2', { x: '100%' }, { x: '14%' }, 0)
+        .fromTo('.gallery-wrapper .g3', { x: '200%' }, { x: '27%' }, .18)
+        .fromTo('.gallery-wrapper .g4', { x: '300%' }, { x: '40%' }, .36)
+        .fromTo('.gallery-wrapper .g5', { x: '400%' }, { x: '53%' }, .54)
+        .fromTo('.container-carta', { x: '120%' }, { x: 0, duration: 1.2, ease: 'power3.out' }, .5)
+        .fromTo('.container-carta .inner-content', { autoAlpha: 0 }, { autoAlpha: 1, duration: .6, ease: 'none' }, 1.05);
     });
 
     /* footer image settles: scale 1.5 → 1, y -15rem → 0 (desktop) */

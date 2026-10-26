@@ -66,8 +66,10 @@ button{font:inherit;color:inherit}
 .hd__left a{background:linear-gradient(currentColor,currentColor) 100% 100%/0 1px no-repeat;transition:background-size 1s cubic-bezier(.19,1,.155,1.01)}
 @media (hover:hover){.hd__left a:hover{background-position:0 100%;background-size:100% 1px}}
 /* --ls = scroll-scrubbed size, --lm = menu factor (1 closed, 0 open): opening the menu eases the logo down to the bar size */
-.hd__logo{display:block;transform-origin:50% 0;transform:translateY(calc((var(--ls,1) - 1) * var(--lm,1) * 1.6rem)) scale(calc(1 + (var(--ls,1) - 1) * var(--lm,1)));will-change:transform}
-.hd__logo img{height:7.2rem;width:auto}
+/* the mark is drawn at its largest size (1.75 x --lh) and only ever scaled DOWN: a will-change layer scaled up is a blurred bitmap.
+   Negative margins keep the layout box at --lh tall, so the header grid is unchanged. 1.1876 = the mark's aspect ratio */
+.hd__logo{--lh:7.2rem;display:block;margin:0 calc(var(--lh) * -.4454) calc(var(--lh) * -.75);transform-origin:50% 0;transform:translateY(calc((var(--ls,1) - 1) * var(--lm,1) * 1.6rem)) scale(calc((1 + (var(--ls,1) - 1) * var(--lm,1)) / 1.75));will-change:transform}
+.hd__logo img{display:block;height:calc(var(--lh) * 1.75);width:auto}
 /* top of page: no bar, no border, larger logo (scroll scrubs it back, see sel.js) */
 .motion .hd{--hb:0;--ls:1.75}
 .hd__right{display:flex;gap:1rem;justify-content:flex-end;align-items:center}
@@ -172,15 +174,15 @@ html.menu-open{overflow:hidden}
 /* V · menu */
 .menu{margin:0 var(--pad);background:var(--paper);color:var(--bottle)}
 .menu__head{padding:16rem 20rem 10rem;text-align:center;display:grid;gap:5rem;justify-items:center}
-.container-parent{position:relative;height:260vh}
+.container-parent{position:relative;height:340vh}
 .container-sticky{position:relative;height:100vh;overflow:hidden;padding:calc(var(--hh) + 2rem) 3rem 3rem}
 .gallery-wrapper{position:relative;height:100%}
-.gallery-item{position:absolute;top:0;left:0;width:61.7rem;height:100%;border-radius:.4rem;overflow:hidden;box-shadow:-2rem 0 4rem rgba(17,22,18,.25)}
+.gallery-item{position:absolute;top:0;left:0;width:61.7rem;height:100%;border-radius:.4rem;overflow:hidden;box-shadow:-2rem 0 4rem rgba(17,22,18,.25);will-change:transform}
 .gallery-item img{width:100%;height:100%;object-fit:cover}
 .g1{z-index:5}.g2{z-index:4}.g3{z-index:3}.g4{z-index:2}.g5{z-index:1}
 .g2{transform:translateX(14%)}.g3{transform:translateX(27%)}.g4{transform:translateX(40%)}.g5{transform:translateX(53%)}
-.container-carta{position:absolute;z-index:10;top:calc(var(--hh) + 2rem);right:3rem;bottom:3rem;width:62rem;background:var(--ink);color:var(--paper);border-radius:.4rem;display:grid;place-items:center;padding:5rem 7rem}
-.inner-content{width:100%;display:grid;gap:1.6rem;text-align:center;justify-items:center}
+.container-carta{position:absolute;z-index:10;top:calc(var(--hh) + 2rem);right:3rem;bottom:3rem;width:62rem;background:var(--ink);color:var(--paper);border-radius:.4rem;display:grid;place-items:center;padding:min(5rem,4vh) 7rem;will-change:transform}
+.inner-content{width:100%;display:grid;gap:1.6rem;text-align:center;justify-items:center;transform-origin:50% 0}
 .carta__mark{width:9rem;margin-bottom:1.6rem}
 .carta__k,.carta__price{font-size:1.25rem;letter-spacing:.22em;text-transform:uppercase;color:var(--candle)}
 .carta__k b,.carta__price b{font-weight:400;color:var(--amber);margin-left:1rem}
@@ -242,7 +244,7 @@ html.menu-open{overflow:hidden}
   :root{--pad:.5rem;--hh:8rem}
   .hd__left{display:none}
   .hd{grid-template-columns:auto 1fr;padding:0 2.6rem}
-  .hd__logo img{height:5.6rem}
+  .hd__logo{--lh:5.6rem}
   .banner__slider{height:calc(100svh - var(--pad))}
   .banner__card{top:auto;bottom:34rem;width:18rem;height:25rem;margin-left:-9rem}
   .banner__title{bottom:10rem}
@@ -334,7 +336,7 @@ html.menu-open{overflow:hidden}
   .hd__right{display:contents}
   .hd__right .pill--fill{order:1;justify-self:start}
   .hd__logo{order:2;display:block}
-  .hd__logo img{height:42px;width:auto}
+  .hd__logo{--lh:42px}
   .hd__right .round{order:3;justify-self:end}
   .hd .pill{height:36px;padding:0 16px;font-size:11px;letter-spacing:.2em}
   .hd .round{width:40px;height:40px}
